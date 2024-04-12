@@ -1,5 +1,6 @@
 const express = require("express");
 const odm = require("./odm");
+const cors = require("cors");
 const { default: mongoose } = require("mongoose");
 const { LogSchema, TimeTableSchema, OnDurationSchema } = require("./schema");
 const { checkIfClassIsHappening } = require("./utils");
@@ -18,6 +19,7 @@ app.use((req, res, next) => {
   console.log(req.ip, req.method, req.url);
   next();
 });
+app.use(cors());
 
 app.get("/", async (req, res) => {
   const timetable = await TimeTable.find({});
