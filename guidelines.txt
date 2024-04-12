@@ -1,0 +1,57 @@
+monday: 1 ---- sunday: 7
+sample:
+for class on wednesday from 2:00 pm to 2:50 pm
+ {
+	"from" : {
+		"day" : 3,
+		"h" : 14,
+		"m" : 0
+	},
+	"to" : {
+		"day" : 3,
+		"h" : 14,
+		"m" : 50
+	},
+ }
+
+ send as array of objects...
+ like 
+
+ [
+	 {
+	"from" : {
+		"day" : 3,
+		"h" : 14,
+		"m" : 0
+	},
+	"to" : {
+		"day" : 3,
+		"h" : 14,
+		"m" : 50
+	},
+ }, 
+  {
+	"from" : {
+		"day" : 3,
+		"h" : 14,
+		"m" : 0
+	},
+	"to" : {
+		"day" : 3,
+		"h" : 14,
+		"m" : 50
+	},
+ },
+  {
+	"from" : {
+		"day" : 3,
+		"h" : 14,
+		"m" : 0
+	},
+	"to" : {
+		"day" : 3,
+		"h" : 14,
+		"m" : 50
+	},
+ }
+ ]
