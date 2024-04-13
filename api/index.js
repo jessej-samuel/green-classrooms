@@ -22,16 +22,6 @@ app.use((req, res, next) => {
 app.use(cors());
 
 app.get("/", async (req, res) => {
-  const timetable = await TimeTable.find({});
-  res.json(
-    timetable.map((t) => ({
-      from: t.from,
-      to: t.to,
-    }))
-  );
-});
-
-app.get("/ping", async (req, res) => {
   const time = new Date();
   if (req.query.time) {
     time.setTime(parseInt(req.query.time));
@@ -47,13 +37,16 @@ app.get("/ping", async (req, res) => {
 
   checkIfClassIsHappening(time.getTime(), TimeTable, OnDuration).then(
     async ({ isClass, switchOffAt }) => {
+      const response = isClass ? switchOffAt.getTime() - time.getTime() : 0;
+
+      res.send(response.toString());
       log.type = isClass ? "ENTER" : "SHUTDOWN";
       log.switchOffAt = switchOffAt.getTime();
 
       // for debugging: set checking date to today
       switchOffAt.setDate(time.getDate());
 
-      if (isClass) {
+      if (isClass && switchOffAt.getTime() - time.getTime() > 0.9 * 1000) {
         const onduration = new OnDuration({
           from: {
             h: time.getHours(),
@@ -65,14 +58,12 @@ app.get("/ping", async (req, res) => {
             m: switchOffAt.getMinutes(),
             day: time.getDay(),
           },
-          dur: (switchOffAt.getTime() - time.getTime()) / 1000,
+          dur: (switchOffAt.getTime() - time.getTime()) / 1000, // in seconds
         });
         const doc = await onduration.save();
       }
 
-      log.save().then(() => {
-        res.json({ ...log._doc });
-      });
+      log.save();
     }
   );
 });
