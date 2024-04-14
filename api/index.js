@@ -94,10 +94,47 @@ app.get("/last_5_day_consumption", async (req, res) => {
       data.push({ day: i, avg: 0, tot: 0 });
     } else {
       const tot = prevDurations.reduce((acc, curr) => acc + curr.dur, 0);
-      data.push({ day: i, avg: tot / prevDurations.length, tot });
+      data.push({
+        day: i,
+        avg: tot / prevDurations.length / 60 / 60,
+        tot: tot / 60 / 60,  // /60/60 is for converting into hours
+      });
     }
   }
   res.json(data);
+});
+
+app.get("/generate", (req, res) => {
+  TimeTable.find().then((docs) => {
+    for (let i = 0; i < docs.length; i++) {
+      const start = new Date();
+      const end = new Date();
+      start.setHours(docs[i].from.h);
+      start.setMinutes(docs[i].from.m);
+
+      end.setHours(docs[i].to.h);
+      end.setMinutes(docs[i].to.m);
+      // get random time to switch on between start and end
+      const randomTime = new Date(
+        start.getTime() + Math.random() * (end.getTime() - start.getTime())
+      );
+      const onduration = new OnDuration({
+        from: {
+          h: randomTime.getHours(),
+          m: randomTime.getMinutes(),
+          day: docs[i].from.day,
+        },
+        to: {
+          h: end.getHours(),
+          m: end.getMinutes(),
+          day: docs[i].from.day,
+        },
+        dur: (end.getTime() - randomTime.getTime()) / 1000, // in seconds
+      });
+      onduration.save();
+    }
+  });
+  res.send("done");
 });
 
 app.listen(5000, "192.168.1.188");
