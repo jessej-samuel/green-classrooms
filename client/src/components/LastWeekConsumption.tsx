@@ -3,7 +3,17 @@ import React, { useEffect } from "react";
 import Chart from "chart.js";
 
 export default function LastWeekConsumption() {
-  const [chartData, setChartData] = React.useState([]);
+  const [chartData, setChartData] = React.useState({
+    labels: ["MON", "TUE", "WED", "THU", "FRI"],
+    datasets: [
+      {
+        label: "Consumption",
+        data: [0, 0, 0, 0, 0],
+        backgroundColor: "rgba(75, 192, 192, 0.8)",
+        borderWidth: 1,
+      },
+    ],
+  });
 
   useEffect(() => {
     fetch("http://192.168.1.188:5000/last_5_day_consumption")
@@ -14,7 +24,9 @@ export default function LastWeekConsumption() {
           datasets: [
             {
               label: "Consumption",
-              data: data.map((item) => item.tot),
+              data: data.map((item: { tot: any }) =>
+                parseFloat(item.tot.toFixed(2))
+              ),
               backgroundColor: "rgba(75, 192, 192, 0.8)",
               borderWidth: 1,
             },
@@ -29,7 +41,7 @@ export default function LastWeekConsumption() {
       type: "bar",
       data: chartData,
       options: {
-        maintainAspectRatio: false,
+        maintainAspectRatio: true,
         responsive: true,
         title: {
           display: false,
@@ -37,19 +49,12 @@ export default function LastWeekConsumption() {
           fontColor: "white",
         },
         legend: {
+          display: false,
           labels: {
             fontColor: "white",
           },
           align: "end",
           position: "bottom",
-        },
-        tooltips: {
-          mode: "index",
-          intersect: false,
-        },
-        hover: {
-          mode: "nearest",
-          intersect: true,
         },
         scales: {
           xAxes: [
@@ -72,7 +77,7 @@ export default function LastWeekConsumption() {
               },
               display: true,
               scaleLabel: {
-                display: false,
+                display: true,
                 labelString: "Consumption",
                 fontColor: "white",
               },
@@ -90,10 +95,7 @@ export default function LastWeekConsumption() {
         <div className="rounded-t mb-0 px-4 py-3 bg-transparent">
           <div className="flex flex-wrap items-center">
             <div className="relative w-full max-w-full flex-grow flex-1">
-              <h6 className="uppercase text-blueGray-100 mb-1 text-xs font-semibold">
-                Consumption
-              </h6>
-              <h2 className="text-white text-xl font-semibold">Last week</h2>
+              <h2 className="text-white text-2xl font-normal">Usage time</h2>
             </div>
           </div>
         </div>
