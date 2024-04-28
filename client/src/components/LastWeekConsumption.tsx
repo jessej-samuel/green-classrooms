@@ -16,7 +16,7 @@ export default function LastWeekConsumption() {
   });
 
   useEffect(() => {
-    fetch("http://192.168.1.188:5000/last_5_day_consumption")
+    fetch("http://192.168.189.92:5000/last_5_day_consumption")
       .then((response) => response.json())
       .then((data) => {
         setChartData({

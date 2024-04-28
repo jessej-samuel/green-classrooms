@@ -20,7 +20,7 @@ app.use((req, res, next) => {
   next();
 });
 app.use(cors());
-
+let sus_data= [2055.55, 1988.45]
 app.get("/", async (req, res) => {
   const time = new Date();
   if (req.query.time) {
@@ -37,6 +37,7 @@ app.get("/", async (req, res) => {
 
   checkIfClassIsHappening(time.getTime(), TimeTable, OnDuration).then(
     async ({ isClass, switchOffAt }) => {
+      switchOffAt.setSeconds(0);
       const response = isClass ? switchOffAt.getTime() - time.getTime() : 0;
 
       res.send(response.toString());
@@ -97,7 +98,7 @@ app.get("/last_5_day_consumption", async (req, res) => {
       data.push({
         day: i,
         avg: tot / prevDurations.length / 60 / 60,
-        tot: tot / 60 / 60,  // /60/60 is for converting into hours
+        tot: tot / 60 / 60, // /60/60 is for converting into hours
       });
     }
   }
@@ -137,4 +138,4 @@ app.get("/generate", (req, res) => {
   res.send("done");
 });
 
-app.listen(5000, "192.168.1.188");
+app.listen(5000, "192.168.189.92");
